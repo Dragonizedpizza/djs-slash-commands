@@ -44,7 +44,6 @@ module.exports = class SlashCommandHandler {
   listen() {
     this.client.ws.on("INTERACTION_CREATE", (rawInt) => {
       const interaction = new Interaction(rawInt);
-      if (!interaction.isCommand()) return;
       this.client.emit("slashCreate", interaction);
     });
   }
