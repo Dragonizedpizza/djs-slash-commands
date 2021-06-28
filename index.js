@@ -4,10 +4,10 @@ module.exports = class SlashCommandHandler {
     if (!client) throw new Error("No client provided.");
     this.client = client;
   }
-  add(slash = {}) {
+  async add(slash = {}) {
     if (!slash.name) throw new Error("Invalid name provided.");
     if (!slash.description) throw new Error("Invalid description provided.");
-    this.client.api.applications(this.client.user.id).commands.post({
+    await this.client.api.applications(this.client.user.id).commands.post({
       data: {
         name: slash.name.toLowerCase(),
         description: slash.description,
@@ -21,7 +21,7 @@ module.exports = class SlashCommandHandler {
       },
     });
   }
-  bulkAdd(slashCmds) {
+  async bulkAdd(slashCmds) {
     if (!slashCmds) throw new Error("Invalid commands provided.");
     if (!Array.isArray(slashCmds))
       throw new Error("Slash commands are not an array.");
