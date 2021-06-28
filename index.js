@@ -1,4 +1,4 @@
-const Interaction = require("./interactionClass.js");
+const Interaction = require("./InteractionClass.js");
 module.exports = class SlashCommandHandler {
   constructor(client) {
     if (!client) throw new Error("No client provided.");

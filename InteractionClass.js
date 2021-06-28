@@ -11,6 +11,7 @@ module.exports = class Interaction {
       options.member,
       this.guild
     );
+    this.commandName = options.data.name;
     this.authorID = options.member.user.id;
     this.author = this.member.user;
     this.args = options.data.options;
