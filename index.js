@@ -5,6 +5,7 @@ module.exports = class SlashCommandHandler {
     this.client = client;
   }
   async add(slash = {}) {
+    try {
     if (!slash.name) throw new Error("Invalid name provided.");
     if (!slash.description) throw new Error("Invalid description provided.");
     await this.client.api.applications(this.client.user.id).commands.post({
@@ -20,13 +21,16 @@ module.exports = class SlashCommandHandler {
           : undefined,
       },
     });
+  } catch (err) {
+    throw err;
+  }
   }
   async bulkAdd(slashCmds) {
+    try {
     if (!slashCmds) throw new Error("Invalid commands provided.");
     if (!Array.isArray(slashCmds))
       throw new Error("Slash commands are not an array.");
-    await this.client.api.interactions(this.client.user.id).commands.put({
-      data: slashCmds.map((x) => {
+      const cmdsBulk = slashCmds.map((x) => {
         return {
           name: x.name.toLowerCase(),
           description: x.description,
@@ -38,13 +42,21 @@ module.exports = class SlashCommandHandler {
               })
             : undefined,
         };
-      }),
-    });
+      });
+    await this.client.api.applications(this.client.user.id).commands.put({data: cmdsBulk})
+  } catch (err) {
+    throw err;
+  }
   }
   listen() {
     this.client.ws.on("INTERACTION_CREATE", (rawInt) => {
-      const interaction = new Interaction(rawInt);
+      try {
+      const interaction = new Interaction(rawInt, this.client);
+      if (!interaction.isCommand()) return;
       this.client.emit("slashCreate", interaction);
+      } catch (err) {
+        throw err;
+      }
     });
   }
 };

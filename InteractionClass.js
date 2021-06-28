@@ -1,5 +1,7 @@
+const Discord = require("discord.js");
 module.exports = class Interaction {
   constructor(options, client) {
+    try {
     this.client = client;
     this.type = options.type == 2 ? "APPLICATION_COMMAND" : null;
     this.channel = this.client.channels.resolve(options.channel_id);
@@ -10,7 +12,7 @@ module.exports = class Interaction {
       this.client,
       options.member,
       this.guild
-    );
+    )
     this.commandName = options.data.name;
     this.authorID = options.member.user.id;
     this.author = this.member.user;
@@ -20,6 +22,9 @@ module.exports = class Interaction {
     this.applicationID = options.applicationID;
     this.replied = false;
     this.deferred = false;
+    } catch (err) {
+      throw err;
+    }
   }
   async reply(content, options) {
     if (this.deferred || this.replied)
@@ -32,7 +37,7 @@ module.exports = class Interaction {
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
-        type: "CHANNEL_MESSAGE_WITH_SOURCE",
+        type: 4,
         data,
       },
       files,
@@ -45,7 +50,7 @@ module.exports = class Interaction {
       throw new Error("Interaction already replied.");
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
-        type: "DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE",
+        type: 5,
         data: {
           flags: ephemeral ? 1 << 6 : undefined,
         },
@@ -54,6 +59,6 @@ module.exports = class Interaction {
     this.deferred = true;
   }
   isCommand() {
-    return !this.type;
+    return !!this.type;
   }
 };
