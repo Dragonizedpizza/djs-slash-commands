@@ -4,7 +4,7 @@ module.exports = class SlashCommandHandler {
     if (!client) throw new Error("No client provided.");
     this.client = client;
   }
-  async add(slash = {}, guildId) {
+  async add(slash = {}, GuildID) {
     try {
       if (!slash.name) throw new Error("Invalid name provided.");
       if (!slash.description) throw new Error("Invalid description provided.");
@@ -19,32 +19,29 @@ module.exports = class SlashCommandHandler {
             })
           : undefined,
       };
-      async function postCommand() {
+      async function postCommand(client, guildId) {
         if (!guildId)
-          await this.client.api
-            .applications(this.client.user.id)
-            .commands.post({
-              data: data,
-            });
-        else {
-          this.client.api
-            .applications(this.client.user.id)
+          await client.api.applications(client.user.id).commands.post({
+            data: data,
+          });
+        else
+          client.api
+            .applications(client.user.id)
             .guilds(guildId)
             .commands.post({
               data: data,
             });
-        }
       }
       if (!this.client.user)
         this.client.on("ready", async () => {
-          await postCommand();
+          await postCommand(this.client, GuildID);
         });
-      else await postCommand();
+      else await postCommand(this.client, GuildID);
     } catch (err) {
       throw err;
     }
   }
-  async bulkAdd(slashCmds, guildId) {
+  async bulkAdd(slashCmds, GuildID) {
     try {
       if (!slashCmds) throw new Error("Invalid commands provided.");
       if (!Array.isArray(slashCmds))
@@ -62,22 +59,22 @@ module.exports = class SlashCommandHandler {
             : undefined,
         };
       });
-      async function postCommands() {
+      async function postCommands(client, guildId) {
         if (!guildId)
-          await this.client.api
-            .applications(this.client.user.id)
+          await client.api
+            .applications(client.user.id)
             .commands.put({ data: cmdsBulk });
         else
-          await this.client.api
-            .applications(this.client.user.id)
+          await client.api
+            .applications(client.user.id)
             .guilds(guildId)
             .commands.put({ data: cmdsBulk });
       }
       if (!this.client.user)
         this.client.on("ready", async () => {
-          await postCommands();
+          await postCommands(this.client, GuildID);
         });
-      else await postCommands();
+      else await postCommands(this.client, GuildID);
     } catch (err) {
       throw err;
     }
@@ -86,7 +83,7 @@ module.exports = class SlashCommandHandler {
     this.client.ws.on("INTERACTION_CREATE", (rawInt) => {
       try {
         const interaction = new Interaction(rawInt, this.client);
-        if (!interaction.isCommand()) return;
+        if (!interaction) return;
         this.client.emit("slashCreate", interaction);
       } catch (err) {
         throw err;

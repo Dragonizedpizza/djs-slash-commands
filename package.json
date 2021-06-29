@@ -1,7 +1,7 @@
 {
   "name": "djs-slash-commands",
-  "version": "1.4.0",
-  "description": "A wrapper for discord.js slash commands.",
+  "version": "1.5.0",
+  "description": "A wrapper meant to incorporate discord.js slash commands into your Discord bot.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

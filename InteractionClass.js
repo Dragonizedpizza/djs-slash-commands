@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
-module.exports = class Interaction {
+module.exports = class SlashCommandInteraction {
   constructor(options, client) {
     try {
       this.client = client;
-      this.type = options.type == 2 ? "APPLICATION_COMMAND" : null;
+      this.isCommand = options.type == 2 ? true : false;
       this.channel = this.client.channels.resolve(options.channel_id);
       this.channelID = options.channel_id;
       this.guild = this.client.guilds.cache.get(options.guild_id);
@@ -13,13 +13,16 @@ module.exports = class Interaction {
         options.member,
         this.guild
       );
+      if (!this.member.guild && this.member.joinedTimestamp) this.member = null;
       this.commandName = options.data.name;
       this.authorID = options.member.user.id;
-      this.author = this.member.user;
+      this.author =
+        this.member.user || this.client.users.cache.get(this.authorID) || null;
       this.args = options.data.options;
       this.id = options.id;
       this.token = options.token;
       this.applicationID = options.applicationID;
+      this.webhook = new Discord.WebhookClient(this.id, this.token);
       this.replied = false;
       this.deferred = false;
     } catch (err) {
@@ -57,8 +60,5 @@ module.exports = class Interaction {
       },
     });
     this.deferred = true;
-  }
-  isCommand() {
-    return !!this.type;
   }
 };
