@@ -1,6 +1,6 @@
 {
   "name": "djs-slash-commands",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "description": "A wrapper for discord.js slash commands.",
   "main": "index.js",
   "scripts": {
