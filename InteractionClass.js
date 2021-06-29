@@ -2,26 +2,26 @@ const Discord = require("discord.js");
 module.exports = class Interaction {
   constructor(options, client) {
     try {
-    this.client = client;
-    this.type = options.type == 2 ? "APPLICATION_COMMAND" : null;
-    this.channel = this.client.channels.resolve(options.channel_id);
-    this.channelID = options.channel_id;
-    this.guild = this.client.guilds.cache.get(options.guild_id);
-    this.guildID = options.guild_id;
-    this.member = new Discord.GuildMember(
-      this.client,
-      options.member,
-      this.guild
-    )
-    this.commandName = options.data.name;
-    this.authorID = options.member.user.id;
-    this.author = this.member.user;
-    this.args = options.data.options;
-    this.id = options.id;
-    this.token = options.token;
-    this.applicationID = options.applicationID;
-    this.replied = false;
-    this.deferred = false;
+      this.client = client;
+      this.type = options.type == 2 ? "APPLICATION_COMMAND" : null;
+      this.channel = this.client.channels.resolve(options.channel_id);
+      this.channelID = options.channel_id;
+      this.guild = this.client.guilds.cache.get(options.guild_id);
+      this.guildID = options.guild_id;
+      this.member = new Discord.GuildMember(
+        this.client,
+        options.member,
+        this.guild
+      );
+      this.commandName = options.data.name;
+      this.authorID = options.member.user.id;
+      this.author = this.member.user;
+      this.args = options.data.options;
+      this.id = options.id;
+      this.token = options.token;
+      this.applicationID = options.applicationID;
+      this.replied = false;
+      this.deferred = false;
     } catch (err) {
       throw err;
     }
