@@ -6,6 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "djs",
+    "slash-commands",
+    "slash commands",
+    "slash cmds",
+    "slash-cmds"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dragonizedpizza/djs-slash-commands.git"
@@ -15,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/dragonizedpizza/djs-slash-commands/issues"
   },
-  "homepage": "https://github.com/dragonizedpizza/djs-slash-commands#readme"
+  "homepage": "https://github.com/dragonizedpizza/djs-slash-commands#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
 }

@@ -19,7 +19,22 @@ const SlashCommands = require("djs-slash-commands");
 client.SlashCommands = new SlashCommands(client);
 ```
 
-**More important information at the bottom.**
+### Receiving the interaction:
+
+```js
+client.on("slashCreate", (interaction) => {
+  if (interaction.commandName === "somecommand")
+    return interaction.reply("Some reply...");
+  if (interaction.commandName === "someothercommand")
+    return interaction.reply("This is an ephemeral.", { ephemeral: true });
+
+  // Sending a followup message:
+  if (interaction.commandName === "ping") {
+    interaction.reply("Ping?!");
+    interaction.webhook.send("Pong!");
+  }
+});
+```
 
 ### Global Commands:
 
@@ -167,42 +182,28 @@ client.SlashCommands.bulkAdd([
 ]);
 ```
 
-### Receiving the interaction:
-
-```js
-client.SlashCommands.listen();
-
-client.on("slashCreate", (interaction) => {
-  if (interaction.commandName === "somecommand")
-    return interaction.reply("Some reply...");
-  if (interaction.commandName === "someothercommand")
-    return interaction.reply("This is an ephemeral.", { ephemeral: true });
-
-  // Sending a followup message:
-  if (interaction.commandName === "ping") {
-    interaction.reply("Ping?!");
-    interaction.webhook.send("Pong!");
-  }
-});
-```
-
 ### Interaction Properties:
 
-| Name          | Value                 | Purpose                                                |
-| ------------- | --------------------- | ------------------------------------------------------ |
-| client        | Discord.Client        | Client provided when initializing handler.             |
-| type          | Boolean               | Whether the interaction is a command.                  |
-| channel       | Discord.Channel       | Channel interaction occured in.                        |
-| channelID     | String                | Channel interaction occured in's ID.                   |
-| guild         | Discord.Guild         | Guild the interaction occured in.                      |
-| guildID       | String                | Guild the interaction occured in's ID.                 |
-| member        | Discord.GuildMember   | Guild member who used the interaction. null if in DMs. |
-| commandName   | String                | Interaction command name.                              |
-| author        | Discord.User          | User who used interaction.                             |
-| args          | Array                 | Arguments provided for interaction.                    |
-| id            | String                | Interaction ID.                                        |
-| token         | String                | Interaction token.                                     |
-| applicationID | String                | Interaction application ID.                            |
-| webhook       | Discord.WebhookClient | Webhook client for sending followup messages.          |
-| replied       | Boolean               | Whether the interaction has been replied to.           |
-| deferred      | Boolean               | Whether the interaction has been deferred to.          |
+| Name          | Value                 | Purpose                                                     |
+| ------------- | --------------------- | ----------------------------------------------------------- |
+| client        | Discord.Client        | Client that initiated the interaction.                      |
+| type          | Boolean               | Interaction type.                                           |
+| isCommand     | Boolean               | Whether interaction is a command.                           |
+| channel       | Discord.TextChannel   | Channel interaction occured in.                             |
+| channelID     | String                | Channel interaction occured in's ID.                        |
+| guild         | Discord.Guild         | Guild the interaction occured in.                           |
+| guildID       | String                | Guild the interaction occured in's ID.                      |
+| member        | Discord.GuildMember   | Guild member who used the interaction. null if in DMs.      |
+| memberID      | String                | Guild member who used the interaction's ID. null if in DMs. |
+| commandName   | String                | Interaction command name.                                   |
+| commandID     | String                | Interaction command ID.                                     |
+| author        | Discord.User          | User who used interaction.                                  |
+| authorID      | String                | User who used the interaction's ID.                         |
+| args          | Array                 | Arguments provided for interaction.                         |
+| id            | String                | Interaction ID.                                             |
+| token         | String                | Interaction token.                                          |
+| applicationID | String                | Interaction application ID.                                 |
+| webhook       | Discord.WebhookClient | Webhook client for sending followup messages.               |
+| replied       | Boolean               | Whether the interaction has been replied to.                |
+| deferred      | Boolean               | Whether the interaction has been deferred to.               |
+| raw           | Object                | Raw interaction object returned from the API.               |

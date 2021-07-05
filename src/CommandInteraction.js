@@ -1,0 +1,229 @@
+const Discord = require("discord.js");
+const { InteractionTypes, InteractionCommandOptionTypesInteger } = require("./Constants.js");
+module.exports = class SlashCommandInteraction {
+  constructor(options, client) {
+    try {
+
+      /**
+       * Client that initiated the interaction.
+       * @type {Discord.Client}
+       */
+
+      this.client = client;
+
+      /**
+       * Interaction type.
+       * @type {String}
+       */
+
+      this.type = InteractionTypes[options.type];
+
+      /**
+       * Whether the interaction is a command.
+       * @type {Boolean}
+       */
+
+      this.isCommand = this.type === "APPLICATION_COMMAND" ? true : false;
+
+      /**
+       * Channel the interaction occured in.
+       * @type {Discord.TextChannel}
+       */
+
+      this.channel = this.client.channels.resolve(options.channel_id);
+
+      /**
+       * Channel interaction occured in's ID.
+       * @type {String}
+       */
+
+      this.channelID = options.channel_id;
+
+      /**
+       * Guild the interaction occured in.
+       * @type {Discord.Guild}
+       */
+
+      this.guild = this.client.guilds.cache.get(options.guild_id);
+
+      /**
+       * Guild the interaction occured in's ID.
+       * @type {String}
+       */
+
+      this.guildID = options.guild_id;
+
+      /**
+       * Guild member who used the interaction. null if in DMs.
+       * @type {Discord.GuildMember}
+       */
+
+      this.member = new Discord.GuildMember(
+        this.client,
+        options.member,
+        this.guild
+      );
+
+      if (!this.member.guild && this.member.joinedTimestamp) this.member = null;
+
+      /**
+       * Member who used the interaction's ID. null if in DMs.
+       * @type {String}
+       */
+
+      this.memberID = this.member ? this.member.user.id : null;
+
+      /**
+       * Interaction command name.
+       * @type {String}
+       */
+
+      this.commandName = options.data.name;
+
+      /**
+       * Interaction command ID.
+       * @type {String}
+       */
+
+      this.commandID = options.data.id;
+
+      /**
+       * User who used interaction.
+       * @type {Discord.User}
+       */
+
+      this.author =
+        this.member.user || this.client.users.cache.get(this.authorID) || null;
+
+      /**
+       * User who used the interaction's ID.
+       * @type {String}
+       */
+
+      this.authorID = options.member.user.id;
+
+      /**
+       * Arguments provided for interaction.
+       * @type {Discord.Collection}
+       */
+
+      this.args = new Discord.Collection();
+
+      try {
+      for (const arg of options.data.options) {
+        const argToSet = arg;
+        arg.type = InteractionCommandOptionTypesInteger[arg.type];
+        const { resolved } = options.data;
+        if (resolved) {
+          const { users, members, channels, roles } = resolved;
+          
+          if (users && users[arg.value]) {
+          argToSet.user = new Discord.User(this.client, users[arg.value]);
+          argToSet.member = new Discord.GuildMember(this.client, members[arg.value], this.guild);
+        }
+
+        if (channels && channels[arg.value]) argToSet.channel = new Discord.TextChannel(this.guild, channels[arg.value]);
+        if (roles && roles[arg.value]) {
+          console.log(roles[arg.value])
+          argToSet.role = new Discord.Role(this.client, roles[arg.value], this.guild)
+        }
+      }
+        this.args.set(argToSet.name, argToSet);
+      }} catch (err) {
+        console.log(err);
+      }
+
+      /**
+       * Interaction ID.
+       * @type {String}
+       */
+
+      this.id = options.data.id;
+
+      /**
+       * Interaction token.
+       * @type {String}
+       */
+
+      this.token = options.token;
+
+      /**
+       * Interaction application ID.
+       * @type {String}
+       */
+
+      this.applicationID = options.applicationID;
+
+      /**
+       * Webhook client for sending followup messages.
+       * @type {Disord.WebhookClient}
+       */
+
+      this.webhook = new Discord.WebhookClient(this.id, this.token);
+
+      /**
+       * Whether the interaction has been replied to.
+       * @type {Boolean}
+       */
+
+      this.replied = false;
+
+      /**
+       * Whether the interaction has been deferred to.
+       * @type {Boolean}
+       */
+
+      this.deferred = false;
+
+      Object.defineProperty(this, "raw", {
+        enumerable: false,
+        writable: true,
+      });
+
+      /**
+       * Raw interaction options.
+       * @type {Object}
+       */
+
+      this.raw = options;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async reply(content, options) {
+    if (this.deferred || this.replied)
+      throw new Error("Interaction already replied.");
+
+    const apiMessage =
+      content instanceof Discord.APIMessage
+        ? content
+        : Discord.APIMessage.create(this, content, options);
+
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: 4,
+        data,
+      },
+      files,
+    });
+
+    this.replied = true;
+  }
+
+  async defer({ ephemeral } = {}) {
+    if (this.deferred || this.replied)
+      throw new Error("Interaction already replied.");
+
+    await this.client.api.interactions(this.id, this.token).callback.post({
+      data: {
+        type: 5,
+        data: {
+          flags: ephemeral ? 1 << 6 : undefined,
+        },
+      },
+    });
+    this.deferred = true;
+  }
+};
