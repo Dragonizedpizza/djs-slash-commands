@@ -1,29 +1,30 @@
 const { SnowflakeUtil } = require("discord.js");
+let timestamp;
 
 /**
  * Timestamp handler, convertable to Discord's epoch.
  * @type {Number}
  */
 
-module.exports = class Timestamp {
+module.exports = class Timestamp extends Number {
   constructor(date) {
-    this.timestamp = date;
+    timestamp = date;
 
-    if (!this.timestamp) throw new Error("No date provided.");
+    if (!timestamp) throw new Error("No date provided.");
 
-    if (this.timestamp instanceof Date)
-      this.timestamp = this.timestamp.getTime();
-    else if (+this.timestamp) this.timestamp = +this.timestamp;
-    else if (!this.timestamp instanceof Date && !+this.timetamp)
+    if (timestamp instanceof Date) timestamp = timestamp.getTime();
+    else if (+timestamp) timestamp = +timestamp;
+    else if (!this.timestamp instanceof Date && !+timetamp)
       throw new Error("Invalid date provided.");
 
-    this.timestamp = SnowflakeUtil.deconstruct(this.timestamp).timestamp;
-
-    return this.timestamp;
+    timestamp = SnowflakeUtil.deconstruct(timestamp.toString()).timestamp;
+    super(timestamp);
+    this.timestamp = timestamp;
   }
+
   /**
    * Convert timestamp to Discord's timestamp.
-   * @returns {String}
+   * @returns {Number}
    */
 
   toDiscordTimestamp() {

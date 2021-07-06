@@ -1,14 +1,19 @@
-const Interaction = require("./CommandInteraction.js");
-const {
+const Interaction = require("./CommandInteraction.js"),
+{
   InteractionCommandOptionTypesString,
   InteractionCommandOptionTypesInteger,
-} = require("../utils/Constants.js");
-const ConvertOptions = require("../utils/ConvertOptions.js").userToAPI;
+} = require("../utils/Constants.js"),
+ConvertOptions = require("../utils/ConvertOptions.js").userToAPI,
+ApplicationCommand = require("./ApplicationCommand.js");
 
 module.exports = class SlashCommandHandler {
   constructor(client) {
     if (!client) throw new Error("No client provided.");
     this.client = client;
+  }
+  async get(ID, guildId) {
+    const dat = guildId ? await this.client.api.applications(this.client.user.id).guilds(guildId).commands(ID) : await this.client.api.applications(this.client.user.id).commands(ID);
+    return new ApplicationCommand(dat);
   }
   async add(slash = {}, GuildID) {
     try {

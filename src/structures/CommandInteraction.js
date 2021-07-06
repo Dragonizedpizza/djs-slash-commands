@@ -8,7 +8,6 @@ const InteractionTimestamp = require("./Timestamp.js");
 module.exports = class SlashCommandInteraction {
   constructor(options, client) {
     try {
-      
       /**
        * Client that initiated the interaction.
        * @type {Discord.Client}
@@ -155,19 +154,31 @@ module.exports = class SlashCommandInteraction {
 
       this.id = options.data.id;
 
+      Object.defineProperty(this, "createdTime", {
+        enumerable: false,
+        writable: true,
+      });
+
       /**
        * When the interaction was created's timestamp.
        * @type {Timestamp}
        */
 
-      this.createdTimestamp = new InteractionTimestamp(this.id);
+      this.createdTime = new Timestamp(this.id);
+
+      /**
+       * Interaction timestamp relative to Discord's Epoch.
+       * @type {Number}
+       */
+
+      this.createdTimestampEpoch = this.createdTime.toDiscordTimestamp();
 
       /**
        * When the interaction was created's date.
        * @type {Date}
        */
 
-      this.createdDate = new InteractionTimestamp(this.id).toDate();
+      this.createdTimestamp = this.createdTimeFull.toDate();
 
       /**
        * Interaction token.
@@ -216,7 +227,7 @@ module.exports = class SlashCommandInteraction {
 
       this.raw = options;
     } catch (err) {
-      throw err;
+      console.error(err);
     }
   }
   async reply(content, options) {

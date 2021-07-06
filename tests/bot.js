@@ -21,7 +21,7 @@ client.slash.add(
       },
       {
         name: "xdLoL",
-        type: "SUB_COMMAND",
+        type: "CHANNEL",
         description: "uff ik ik",
       },
     ],
@@ -30,10 +30,16 @@ client.slash.add(
 );
 client.on("ready", async () => {
   console.log("readyy");
-  const dat = await client.api.applications(client.user.id).guilds("803204453321670697").commands.get();
-  console.log(require("util").inspect(dat, { depth: 4 }));
+  const dat = await client.api
+    .applications(client.user.id)
+    .guilds("803204453321670697")
+    .commands.get();
+  console.log(require("util").inspect(dat, { depth: 4, showHidden: true }));
 });
 client.slash.listen();
-client.on("slashCreate", (i) => console.log(i.args));
+client.on("slashCreate", (i) => {
+  console.log(i.createdTimestamp);
+  console.log("bruh");
+});
 
 client.login("");

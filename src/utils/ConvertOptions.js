@@ -16,16 +16,19 @@ module.exports.userToAPI = (options) => {
         return returnObj;
       })
     : undefined;
+  return options;
 };
 
 module.exports.APIToUser = (options) => {
-    let opt;
-    if (options) {
-        opt = options.map((x) => ({
-        name: x.name,
-        description: x.description,
-        type: InteractionCommandOptionTypesInteger[x.type],
-        required: x.required,
-        choices: x.choices || null,
-    }))
-}}
+  let opt;
+  if (options) {
+    opt = options.map((x) => ({
+      name: x.name,
+      description: x.description,
+      type: InteractionCommandOptionTypesInteger[x.type],
+      required: x.required,
+      choices: x.choices || null,
+    }));
+    return opt;
+  }
+};
