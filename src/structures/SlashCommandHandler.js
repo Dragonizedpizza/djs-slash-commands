@@ -2,7 +2,8 @@ const Interaction = require("./CommandInteraction.js");
 const {
   InteractionCommandOptionTypesString,
   InteractionCommandOptionTypesInteger,
-} = require("./Constants.js");
+} = require("../utils/Constants.js");
+const ConvertOptions = require("../utils/ConvertOptions.js").userToAPI;
 
 module.exports = class SlashCommandHandler {
   constructor(client) {
@@ -17,18 +18,7 @@ module.exports = class SlashCommandHandler {
       const data = {
         name: slash.name.toLowerCase(),
         description: slash.description,
-        options: slash.options
-          ? slash.options.map((x) => {
-              const returnObj = x;
-              returnObj.type =
-                InteractionCommandOptionTypesString[x.type] ||
-                InteractionCommandOptionTypesString[
-                  InteractionCommandOptionTypesInteger[x.type]
-                ];
-              returnObj.name = returnObj.name.toLowerCase();
-              return returnObj;
-            })
-          : undefined,
+        options: ConvertOptions(slash.options),
       };
 
       async function postCommand(client, guildId) {
@@ -64,13 +54,7 @@ module.exports = class SlashCommandHandler {
         return {
           name: x.name.toLowerCase(),
           description: x.description,
-          options: x.options
-            ? x.options.map((x) => {
-                const returnObj = x;
-                returnObj.name = returnObj.name.toLowerCase();
-                return returnObj;
-              })
-            : undefined,
+          options: ConvertOptions(x),
         };
       });
 

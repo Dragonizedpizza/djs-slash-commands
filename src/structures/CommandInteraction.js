@@ -1,9 +1,14 @@
 const Discord = require("discord.js");
-const { InteractionTypes, InteractionCommandOptionTypesInteger } = require("./Constants.js");
+const {
+  InteractionTypes,
+  InteractionCommandOptionTypesInteger,
+} = require("../utils/Constants.js");
+const Timestamp = require("./Timestamp.js");
+const InteractionTimestamp = require("./Timestamp.js");
 module.exports = class SlashCommandInteraction {
   constructor(options, client) {
     try {
-
+      
       /**
        * Client that initiated the interaction.
        * @type {Discord.Client}
@@ -109,28 +114,38 @@ module.exports = class SlashCommandInteraction {
 
       this.args = new Discord.Collection();
 
-      try {
       for (const arg of options.data.options) {
         const argToSet = arg;
         arg.type = InteractionCommandOptionTypesInteger[arg.type];
         const { resolved } = options.data;
         if (resolved) {
           const { users, members, channels, roles } = resolved;
-          
-          if (users && users[arg.value]) {
-          argToSet.user = new Discord.User(this.client, users[arg.value]);
-          argToSet.member = new Discord.GuildMember(this.client, members[arg.value], this.guild);
-        }
 
-        if (channels && channels[arg.value]) argToSet.channel = new Discord.TextChannel(this.guild, channels[arg.value]);
-        if (roles && roles[arg.value]) {
-          console.log(roles[arg.value])
-          argToSet.role = new Discord.Role(this.client, roles[arg.value], this.guild)
+          if (users && users[arg.value]) {
+            argToSet.user = new Discord.User(this.client, users[arg.value]);
+            argToSet.member = new Discord.GuildMember(
+              this.client,
+              members[arg.value],
+              this.guild
+            );
+          }
+
+          if (channels && channels[arg.value])
+            argToSet.channel = new Discord.TextChannel(
+              this.guild,
+              channels[arg.value]
+            );
+          if (roles && roles[arg.value]) {
+            const optionsRole = roles[arg.value];
+            optionsRole.permissions = +optionsRole.permissions;
+            argToSet.role = new Discord.Role(
+              this.client,
+              optionsRole,
+              this.guild
+            );
+          }
         }
-      }
         this.args.set(argToSet.name, argToSet);
-      }} catch (err) {
-        console.log(err);
       }
 
       /**
@@ -139,6 +154,20 @@ module.exports = class SlashCommandInteraction {
        */
 
       this.id = options.data.id;
+
+      /**
+       * When the interaction was created's timestamp.
+       * @type {Timestamp}
+       */
+
+      this.createdTimestamp = new InteractionTimestamp(this.id);
+
+      /**
+       * When the interaction was created's date.
+       * @type {Date}
+       */
+
+      this.createdDate = new InteractionTimestamp(this.id).toDate();
 
       /**
        * Interaction token.

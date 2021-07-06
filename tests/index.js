@@ -9,26 +9,31 @@ client.slash.add(
     name: "try",
     description: "to beat me",
     options: [
-        {
-            name: "oLoL",
-            type: "ROLE",
-            description: "yerr"
-        },
-        {
+      {
+        name: "oLoL",
+        type: "ROLE",
+        description: "yerr",
+      },
+      {
         name: "user",
         type: "USER",
         description: "with this user",
       },
       {
-          name: "xdLoL",
-          type: "CHANNEL",
-          description: "uff ik ik"
+        name: "xdLoL",
+        type: "SUB_COMMAND",
+        description: "uff ik ik",
       },
     ],
   },
   "803204453321670697"
 );
-client.on("ready", () => console.log("readyy"))
+client.on("ready", async () => {
+  console.log("readyy");
+  const dat = await client.api.applications(client.user.id).guilds("803204453321670697").commands.get();
+  console.log(require("util").inspect(dat, { depth: 4 }));
+});
 client.slash.listen();
-client.on("slashCreate", (i) => console.log(i.args))
-client.login("ODI1NTc0NDEyMTc4NDIzODU5.YF_6Fg.XqsxwKWzWCpQixbbAcHdrwObjjU");
+client.on("slashCreate", (i) => console.log(i.args));
+
+client.login("");
