@@ -1,10 +1,21 @@
 const { APIToUser } = require("../utils/ConvertOptions.js"),
-Timestamp = require("./Timestamp.js");
+  Timestamp = require("./Timestamp.js");
 Discord = require("discord.js");
 
-module.exports = class ApplicationCommand {
-  constructor(options, client) {
+/**
+ * Application command.
+ * @type {Object}
+ */
 
+module.exports = class ApplicationCommand {
+  
+  /**
+   * Convert to proper application command.
+   * @param {Object} options Raw Discord API command.
+   * @param {Discord.Client} client Client that instantiated this command.
+   */
+
+  constructor(options, client) {
     /**
      * Command name.
      * @type {String}
@@ -18,7 +29,7 @@ module.exports = class ApplicationCommand {
      */
 
     this.id = options.id;
-  
+
     /**
      * Client that initiated the command.
      * @type {Discord.Client}
@@ -32,7 +43,7 @@ module.exports = class ApplicationCommand {
      */
 
     this.applicationID = options.applicationID;
-    
+
     /**
      * Command description.
      * @type {String}
@@ -55,20 +66,18 @@ module.exports = class ApplicationCommand {
     this.version = options.version;
 
     if (options.guild_id) {
-      
       /**
        * Command Guild ID.
        * @type {String}
        */
 
       this.guildID = options.guild_id;
-
     }
 
     Object.defineProperty(this, "createdTime", {
       enumerable: false,
-      writable: true
-    })
+      writable: true,
+    });
 
     /**
      * Interaction created time object. (Custom class)

@@ -1,20 +1,83 @@
 const Interaction = require("./CommandInteraction.js"),
-{
-  InteractionCommandOptionTypesString,
-  InteractionCommandOptionTypesInteger,
-} = require("../utils/Constants.js"),
-ConvertOptions = require("../utils/ConvertOptions.js").userToAPI,
-ApplicationCommand = require("./ApplicationCommand.js");
+  {
+    InteractionCommandOptionTypesString,
+    InteractionCommandOptionTypesInteger,
+  } = require("../utils/Constants.js"),
+  ConvertOptions = require("../utils/ConvertOptions.js").userToAPI,
+  ApplicationCommand = require("./ApplicationCommand.js"),
+  Discord = require("discord.js");
+/**
+ *
+ * @param {Discord.Client} client
+ * @param {String} ID
+ * @param {String} guildId
+ * @returns {Object}
+ */
+async function resolveCommand(client, ID, guildId) {
+  try {
+    let data;
+    if (client.readyAt)
+      if (guildId)
+        data = await client.api
+          .applications(client.user.id)
+          .guilds(guildId)
+          .commands(ID);
+      else data = await client.api.applications(client.user.id).commands(ID);
+    else
+      throw new Error(
+        "Client is not ready. Try calling the function in a ready event."
+      );
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 module.exports = class SlashCommandHandler {
   constructor(client) {
     if (!client) throw new Error("No client provided.");
     this.client = client;
   }
+
+  /**
+   * Fetch an application command from the API.
+   * @param {String} ID
+   * @param {String} guildId
+   * @returns {ApplicationCommand}
+   */
+
   async get(ID, guildId) {
-    const dat = guildId ? await this.client.api.applications(this.client.user.id).guilds(guildId).commands(ID) : await this.client.api.applications(this.client.user.id).commands(ID);
-    return new ApplicationCommand(dat);
+    try {
+      const dat = await resolveCommand(this.client, ID, guildId);
+      return new ApplicationCommand(dat);
+    } catch (err) {
+      throw err;
+    }
   }
+
+  /**
+   * Delete a command.
+   * @param {String} ID
+   * @param {String} guildId
+   * @returns
+   */
+
+  async delete(ID, guildId) {
+    try {
+      const dat = await resolveCommand(this.client, ID, guildId);
+      const dat2 = await dat.delete();
+      return dat2;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * Add a slash command.
+   * @param {Object} slash
+   * @param {String} GuildID
+   */
+
   async add(slash = {}, GuildID) {
     try {
       if (!slash.name) throw new Error("Invalid name provided.");
@@ -49,6 +112,13 @@ module.exports = class SlashCommandHandler {
       throw err;
     }
   }
+
+  /**
+   * Bulk add slash commands.
+   * @param {Array} slashCmds
+   * @param {String} GuildID
+   */
+
   async bulkAdd(slashCmds, GuildID) {
     try {
       if (!slashCmds) throw new Error("Invalid commands provided.");
@@ -84,6 +154,11 @@ module.exports = class SlashCommandHandler {
       throw err;
     }
   }
+
+  /**
+   * Start listening to the interaction.
+   */
+
   listen() {
     this.client.ws.on("INTERACTION_CREATE", (rawInt) => {
       try {

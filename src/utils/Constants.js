@@ -1,8 +1,18 @@
+/**
+ * Interaction types.
+ * @type {Object}
+ */
+
 module.exports.InteractionTypes = {
   1: "PING",
   2: "APPLICATION_COMMAND",
   3: "MESSAGE_COMPONENT",
 };
+
+/**
+ * Interaction command option types. String => Number.
+ * @type {Object}
+ */
 
 module.exports.InteractionCommandOptionTypesString = {
   SUB_COMMAND: 1,
@@ -15,6 +25,11 @@ module.exports.InteractionCommandOptionTypesString = {
   ROLE: 8,
   MENTIONABLE: 9,
 };
+
+/**
+ * Interaction command option types Number => String.
+ * @type {Object}
+ */
 
 module.exports.InteractionCommandOptionTypesInteger = {
   1: "SUB_COMMAND",

@@ -2,11 +2,17 @@ const { SnowflakeUtil } = require("discord.js");
 let timestamp;
 
 /**
- * Timestamp handler, convertable to Discord's epoch.
+ * Timestamp handler.
  * @type {Number}
  */
 
 module.exports = class Timestamp extends Number {
+  
+  /**
+   * Convert to Number.
+   * @param {Date | String | Number} date
+   */
+
   constructor(date) {
     timestamp = date;
 

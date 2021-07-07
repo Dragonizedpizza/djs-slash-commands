@@ -3,6 +3,12 @@ const {
   InteractionCommandOptionTypesString,
 } = require("./Constants.js");
 
+/**
+ * Convert a user's options to API options.
+ * @param {Array} options Options provided from the user.
+ * @returns {Array}
+ */
+
 module.exports.userToAPI = (options) => {
   options
     ? options.map((x) => {
@@ -18,6 +24,12 @@ module.exports.userToAPI = (options) => {
     : undefined;
   return options;
 };
+
+/**
+ * Convert API to user options.
+ * @param {Array} options Raw Discord API options. 
+ * @returns 
+ */
 
 module.exports.APIToUser = (options) => {
   let opt;

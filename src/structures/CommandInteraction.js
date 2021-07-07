@@ -230,6 +230,13 @@ module.exports = class SlashCommandInteraction {
       console.error(err);
     }
   }
+
+  /**
+   * Reply to the interaction.
+   * @param {Discord.MessageEmbed | String} content
+   * @param {Object} options
+   */
+
   async reply(content, options) {
     if (this.deferred || this.replied)
       throw new Error("Interaction already replied.");
@@ -251,6 +258,11 @@ module.exports = class SlashCommandInteraction {
 
     this.replied = true;
   }
+
+  /**
+   * Defer to the interaction. "ApplicationName is thinking..."
+   * @param {Object} ephemeral
+   */
 
   async defer({ ephemeral } = {}) {
     if (this.deferred || this.replied)

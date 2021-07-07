@@ -30,6 +30,8 @@ client.slash.add(
 );
 client.on("ready", async () => {
   console.log("readyy");
+  const dat2 = await client.slash.get("859302354359812127");
+  console.log(dat2);
   const dat = await client.api
     .applications(client.user.id)
     .guilds("803204453321670697")
@@ -37,6 +39,7 @@ client.on("ready", async () => {
   console.log(require("util").inspect(dat, { depth: 4, showHidden: true }));
 });
 client.slash.listen();
+
 client.on("slashCreate", (i) => {
   console.log(i.createdTimestamp);
   console.log("bruh");
