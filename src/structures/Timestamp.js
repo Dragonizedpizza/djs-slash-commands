@@ -7,7 +7,6 @@ let timestamp;
  */
 
 module.exports = class Timestamp extends Number {
-  
   /**
    * Convert to Number.
    * @param {Date | String | Number} date

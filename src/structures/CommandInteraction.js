@@ -130,10 +130,7 @@ module.exports = class SlashCommandInteraction {
           }
 
           if (channels && channels[arg.value])
-            argToSet.channel = new Discord.TextChannel(
-              this.guild,
-              channels[arg.value]
-            );
+            argToSet.channel = client.channels.resolve(channels[arg.value].id);
           if (roles && roles[arg.value]) {
             const optionsRole = roles[arg.value];
             optionsRole.permissions = +optionsRole.permissions;
@@ -215,6 +212,13 @@ module.exports = class SlashCommandInteraction {
 
       this.deferred = false;
 
+      /**
+       * Whether the interaction has been replied to with an ephemeral.
+       * @type {Boolean}
+       */
+
+      this.ephemeral = false;
+
       Object.defineProperty(this, "raw", {
         enumerable: false,
         writable: true,
@@ -227,7 +231,7 @@ module.exports = class SlashCommandInteraction {
 
       this.raw = options;
     } catch (err) {
-      console.error(err);
+      throw err;
     }
   }
 
@@ -255,6 +259,8 @@ module.exports = class SlashCommandInteraction {
       },
       files,
     });
+    
+    this.epehemeral = options["ephemeral"] ? true : false;
 
     this.replied = true;
   }
@@ -267,7 +273,8 @@ module.exports = class SlashCommandInteraction {
   async defer({ ephemeral } = {}) {
     if (this.deferred || this.replied)
       throw new Error("Interaction already replied.");
-
+    
+    this.ephemeral = ephemeral ? true : false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: 5,
@@ -277,5 +284,43 @@ module.exports = class SlashCommandInteraction {
       },
     });
     this.deferred = true;
+  }
+  
+  /**
+   * Fetch interaction reply.
+   * @returns {Object}
+   */
+  
+  async fetchReply() {
+    const raw = await this.webhook.fetchMessage('@original');
+    return this.channel ? this.channel.messages.add(raw) : raw;
+  }
+
+  /**
+   * Delete interaction reply.
+   */
+
+  async deleteReply() {
+    await this.webhook.deleteMessage('@original');
+  }
+
+  /**
+   * Send a followup message.
+   * @param {Discord.MessageEmbed | String} content 
+   * @param {Object} options 
+   * @returns {Discord.Message}
+   */
+
+  async followUp(content, options) {
+    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
+    this.ephemeral = options.ephemeral ? true : false;
+    const raw = await this.client.api.webhooks(this.applicationID, this.token).post({
+      data,
+      files,
+    });
+
+    return this.channel ? this.channel.messages.add(raw) : raw;
   }
 };

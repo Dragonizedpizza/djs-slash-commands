@@ -5,7 +5,7 @@
 ### Installation
 
 ```bash
-$ npm i djs-slash-commands --save
+$ npm i --save djs-slash-commands
 ```
 
 ### Usage
@@ -22,7 +22,7 @@ client.SlashCommands = new SlashCommands(client);
 ### Receiving the interaction:
 
 ```js
-client.on("slashCreate", (interaction) => {
+client.on("slashCreate", async (interaction) => {
   if (interaction.commandName === "somecommand")
     return interaction.reply("Some reply...");
   if (interaction.commandName === "someothercommand")
@@ -31,7 +31,21 @@ client.on("slashCreate", (interaction) => {
   // Sending a followup message:
   if (interaction.commandName === "ping") {
     interaction.reply("Ping?!");
-    interaction.webhook.send("Pong!");
+    interaction.followUp("Pong!");
+  }
+
+  // Editing & deleting reply.
+  if (interaction.commandName === "thatonecommand") {
+    await interaction.reply("REPLIED?!");
+    await interaction.editReply("EDITED?!");
+    // DELETED?!
+    interaction.deleteReply();
+  }
+
+  // Deferring an interaction. Makes it say "{Name} is thinking..." and gives you 15 minutes to reply.
+  if (interaction.commandName === "defer") {
+    interaction.defer();
+    setTimeout(async () => await interaction.reply("I have stopped thinking."), 9000);
   }
 });
 ```
@@ -52,93 +66,47 @@ client.on("slashCreate", (interaction) => {
 | ROLE              | 8     |
 | MENTIONABLE       | 9     |
 
-Adding a global slash command:
+##### Base Object:
 
 ```js
-client.SlashCommands.add({
-  name: "ping", // Name will always be lowercase
-  description: "Check the bot ping.",
-});
-
-// Or for options,
-
-client.SlashCommands.add({
+const baseObject = {
   name: "ping",
-  description: "Check the bot ping.",
+  description: "Pong?!",
+};
+
+// Or, with options:
+
+const baseObject = {
+  name: "ping",
+  description: "pong?!",
   options: [
     {
-      name: "some option", // Name will always be lowercase
-      description: "Some description.",
-      type: 3,
-      required: false, // Optional
+      name: "someoption",
+      description: "some description",
+      type: "USER",
     },
   ],
-});
+};
+
+client.slashCommands.add(baseObject);
 ```
 
 Bulk adding global slash commands:
 
-**Warning: This removes all other slash commands your bot has.**.
+**Warning: This removes all other slash commands your bot has.**
 
 ```js
-client.SlashCommands.bulkAdd([
-  {
-    name: "ping",
-    description: "Check the bot ping.",
-  },
-  {
-    name: "randomcommand",
-    description: "Random description.",
-  },
-]);
-
-// Bulk add commands with options:
-
-client.SlashCommands.bulkAdd([
-  {
-    name: "ping",
-    description: "Check the bot ping.",
-  },
-  {
-    name: "randomcommand",
-    description: "Random description.",
-    options: [
-      {
-        name: "some option", // Name will always be lowercase
-        description: "Some description.",
-        type: 3,
-        required: false, // Optional
-      },
-    ],
-  },
-]);
+const baseObject2 = {
+  name: "othercommand",
+  description: "ANOTHER COMMAND?!",
+};
+client.SlashCommands.bulkAdd([baseObject, baseObject2]);
 ```
 
 ### Guild-Specific Commands:
 
 ```js
-client.SlashCommands.add(
-  {
-    name: "ping",
-    description: "Check the bot's ping.",
-  },
-  "803204453321670697"
-);
-
-// With options:
-
-client.SlashCommands.add({
-  name: "ping",
-  description: "Check the bot ping.",
-  options: [
-    {
-      name: "some option", // Name will always be lowercase
-      description: "Some description.",
-      type: 3,
-      required: false, // Optional
-    },
-  ],
-});
+client.SlashCommands.add(baseObject, "GuildID");
 ```
 
 Bulk add guild-specific slash commands:
@@ -147,39 +115,9 @@ Bulk add guild-specific slash commands:
 
 ```js
 client.SlashCommands.bulkAdd(
-  [
-    {
-      name: "ping",
-      description: "Check the bot's ping.",
-    },
-    {
-      name: "somcommand",
-      description: "Some description.",
-    },
-  ],
-  "803204453321670697"
+  [baseObject, baseObject2]
+  "GuildID"
 );
-
-// With options:
-
-client.SlashCommands.bulkAdd([
-  {
-    name: "ping",
-    description: "Check the bot ping.",
-  },
-  {
-    name: "somecommand",
-    description: "Some description.",
-    options: [
-      {
-        name: "some option", // Name will always be lowercase
-        description: "Some description.",
-        type: 3,
-        required: false, // Optional
-      },
-    ],
-  },
-]);
 ```
 
 ### Interaction Properties:
@@ -210,3 +148,22 @@ client.SlashCommands.bulkAdd([
 | replied               | Boolean                                   | Whether the interaction has been replied to.                   |
 | deferred              | Boolean                                   | Whether the interaction has been deferred to.                  |
 | raw                   | Object                                    | Raw interaction object returned from the API.                  |
+
+### Application Command Properties
+
+| Name                  | Value                                     | Purpose                                                                    |
+| --------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
+| name                  | String                                    | Command name.                                                              |
+| id                    | String                                    | Command ID.                                                                |
+| client                | String                                    | Client that initiated the command.                                         |
+| applicationID         | String                                    | Command application ID.                                                    |
+| description           | String                                    | Command description.                                                       |
+| options               | Array                                     | Command options.                                                           |
+| version               | String                                    | Command version.                                                           |
+| guildID               | String                                    | Command Guild ID. null if global command.                                  |
+| guild                 | Discord.Guild                             | Command Guild. null if global command.                                     |
+| createdTime           | DjsSlashCommands.Timestamp (custom class) | Interaction created time object. (Custom class)                            |
+| createdTimestamp      | Date                                      | Command creation timestamp.                                                |
+| createdTimestampEpoch | Number                                    | Command creation timestamp, relative to Discord's epoch.                   |
+| defaultPermissions    | Boolean                                   | Whether the command will be added when the client is added to a new guild. |
+| type                  | Number                                    | Command type.                                                              |

@@ -5,7 +5,8 @@ const Interaction = require("./CommandInteraction.js"),
   } = require("../utils/Constants.js"),
   ConvertOptions = require("../utils/ConvertOptions.js").userToAPI,
   ApplicationCommand = require("./ApplicationCommand.js"),
-  Discord = require("discord.js");
+  Discord = require("discord.js"),
+  resolveCommand = require("../utils/resolveCommand.js");
 /**
  *
  * @param {Discord.Client} client
@@ -13,25 +14,6 @@ const Interaction = require("./CommandInteraction.js"),
  * @param {String} guildId
  * @returns {Object}
  */
-async function resolveCommand(client, ID, guildId) {
-  try {
-    let data;
-    if (client.readyAt)
-      if (guildId)
-        data = await client.api
-          .applications(client.user.id)
-          .guilds(guildId)
-          .commands(ID);
-      else data = await client.api.applications(client.user.id).commands(ID);
-    else
-      throw new Error(
-        "Client is not ready. Try calling the function in a ready event."
-      );
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 module.exports = class SlashCommandHandler {
   constructor(client) {
@@ -48,8 +30,9 @@ module.exports = class SlashCommandHandler {
 
   async get(ID, guildId) {
     try {
-      const dat = await resolveCommand(this.client, ID, guildId);
-      return new ApplicationCommand(dat);
+      const dat = await resolveCommand(this.client, ID, guildId, "get");
+      const cmd = new ApplicationCommand(dat, this.client);
+      return cmd;
     } catch (err) {
       throw err;
     }
@@ -64,9 +47,8 @@ module.exports = class SlashCommandHandler {
 
   async delete(ID, guildId) {
     try {
-      const dat = await resolveCommand(this.client, ID, guildId);
-      const dat2 = await dat.delete();
-      return dat2;
+      await resolveCommand(this.client, ID, guildId, "delete");
+      return [ID, guildId];
     } catch (err) {
       throw err;
     }

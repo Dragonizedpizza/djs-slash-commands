@@ -1,6 +1,7 @@
 const { APIToUser } = require("../utils/ConvertOptions.js"),
-  Timestamp = require("./Timestamp.js");
-Discord = require("discord.js");
+  Timestamp = require("./Timestamp.js"),
+  Discord = require("discord.js"),
+  resolveCommand = require("../utils/resolveCommand.js");
 
 /**
  * Application command.
@@ -8,7 +9,6 @@ Discord = require("discord.js");
  */
 
 module.exports = class ApplicationCommand {
-  
   /**
    * Convert to proper application command.
    * @param {Object} options Raw Discord API command.
@@ -42,7 +42,7 @@ module.exports = class ApplicationCommand {
      * @type {Number}
      */
 
-    this.applicationID = options.applicationID;
+    this.applicationID = options.application_id;
 
     /**
      * Command description.
@@ -65,14 +65,19 @@ module.exports = class ApplicationCommand {
 
     this.version = options.version;
 
-    if (options.guild_id) {
-      /**
-       * Command Guild ID.
-       * @type {String}
-       */
+    /**
+     * Command Guild ID. null if global command.
+     * @type {String}
+     */
 
-      this.guildID = options.guild_id;
-    }
+    this.guildID = options.guild_id || null;
+
+    /**
+     * Command Guild. null if global command.
+     * @type {Discord.Guild}
+     */
+
+    this.guild = this.client.guilds.cache.get(this.guildID) || null;
 
     Object.defineProperty(this, "createdTime", {
       enumerable: false,
@@ -112,5 +117,9 @@ module.exports = class ApplicationCommand {
      */
 
     this.type = options.type;
+  }
+  async delete() {
+    await resolveCommand(client, this.id, this.guildID, "delete");
+    return [this.id, this.guildID];
   }
 };

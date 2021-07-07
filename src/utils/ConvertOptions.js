@@ -27,8 +27,8 @@ module.exports.userToAPI = (options) => {
 
 /**
  * Convert API to user options.
- * @param {Array} options Raw Discord API options. 
- * @returns 
+ * @param {Array} options Raw Discord API options.
+ * @returns
  */
 
 module.exports.APIToUser = (options) => {
