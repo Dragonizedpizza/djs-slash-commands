@@ -15,7 +15,7 @@ $ npm i --save djs-slash-commands
 Importing and initializing the handler:
 
 ```js
-const SlashCommands = require("djs-slash-commands");
+const { SlashCommands } = require("djs-slash-commands");
 client.SlashCommands = new SlashCommands(client);
 ```
 
