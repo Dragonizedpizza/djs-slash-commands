@@ -109,7 +109,7 @@ module.exports = class ApplicationCommand {
      * @type {Boolean}
      */
 
-    this.defaultPermissions = options.default_permissions;
+    this.defaultPermissions = options.default_permission;
 
     /**
      * Command type.

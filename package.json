@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/dragonizedpizza/djs-slash-commands/issues"
   },
-  "homepage": "https://github.com/dragonizedpizza/djs-slash-commands#readme"
+  "homepage": "https://github.com/dragonizedpizza/djs-slash-commands#readme",
+  "dependencies": {
+    "discord.js": "^12.x"
+  }
 }

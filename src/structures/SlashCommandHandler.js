@@ -31,7 +31,7 @@ module.exports = class SlashCommandHandler {
   async get(ID, guildId) {
     try {
       const dat = await resolveCommand(this.client, ID, guildId, "get");
-      const cmd = new ApplicationCommand(dat, this.client);
+      const cmd = dat && dat.length ? dat.map(x => new ApplicationCommand(x, this.client)) :new ApplicationCommand(dat, this.client);
       return cmd;
     } catch (err) {
       throw err;
