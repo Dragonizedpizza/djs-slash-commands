@@ -31,7 +31,7 @@ module.exports = class SlashCommandHandler {
   async get(ID, guildId) {
     try {
       const dat = await resolveCommand(this.client, ID, guildId, "get");
-      const cmd = dat && dat.length ? dat.map(x => new ApplicationCommand(x, this.client)) :new ApplicationCommand(dat, this.client);
+      const cmd = dat && dat.length ? dat.map(x => new ApplicationCommand(x, this.client, this)) :new ApplicationCommand(dat, this.client, this);
       return cmd;
     } catch (err) {
       throw err;
@@ -47,6 +47,7 @@ module.exports = class SlashCommandHandler {
 
   async delete(ID, guildId) {
     try {
+      if (!ID && guildId) ID = undefined;
       await resolveCommand(this.client, ID, guildId, "delete");
       return [ID, guildId];
     } catch (err) {

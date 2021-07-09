@@ -1,7 +1,8 @@
 const { APIToUser } = require("../utils/ConvertOptions.js"),
   Timestamp = require("./Timestamp.js"),
   Discord = require("discord.js"),
-  resolveCommand = require("../utils/resolveCommand.js");
+  resolveCommand = require("../utils/resolveCommand.js"),
+  SlashCommandHandler = require("./SlashCommandHandler.js");
 
 /**
  * Application command.
@@ -13,9 +14,13 @@ module.exports = class ApplicationCommand {
    * Convert to proper application command.
    * @param {Object} options Raw Discord API command.
    * @param {Discord.Client} client Client that instantiated this command.
+   * @param {SlashCommandHandler} SlashCommandHandler Slash command handler that initiated this command.
+   * 
+   * 
+   * 
    */
 
-  constructor(options, client) {
+  constructor(options, client, SlashCommandHandle) {
     /**
      * Command name.
      * @type {String}
@@ -117,6 +122,13 @@ module.exports = class ApplicationCommand {
      */
 
     this.type = options.type;
+
+    /**
+     * Slash command handler that initiated this command.
+     * @type {SlashCommandHandler}
+     */
+
+    this.SlashCommandHandler = SlashCommandHandle;
   }
   async delete() {
     await resolveCommand(client, this.id, this.guildID, "delete");

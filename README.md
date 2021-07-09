@@ -119,6 +119,45 @@ client.SlashCommands.bulkAdd(
   "GuildID"
 );
 ```
+### Viewing/Deleting the Command:
+
+```js
+client.on("ready", async () => {
+  
+  /**
+   * Viewing the command(s).
+   */
+  
+  const cmds = await client.SlashCommands.get();
+  console.log(cmds); // Logs all slash commands.
+
+  // Guild Commands:
+  const guildCmds = await client.SlashCommands.get(null, "GuildID");
+  console.log(guildCmds); // Logs all guild commands.
+
+  // For the following methods, you must get the ID. You can do so by using the methods above, as they all return a command object with the property ID.
+
+  // For specific commands:
+  const cmd = await client.SlashCommands.get("ID");
+  console.log(cmd);
+
+  // For guild-specific commands:
+  const guildCmd = await client.SlashCommands.get("ID", "GuildID");
+  console.log(guildCmd);
+
+  /**
+   * Deleting the command(s).
+   * For the following methods, you must get the ID. You can do so by using the methods above, as they all return a command object with the property ID.
+
+   */
+
+  // Global command:
+  await client.SlashCommands.delete("ID");
+
+  // Guild-Specific command:
+  await client.SlashCommands.delete("ID", "GuildID");
+})
+```
 
 ### Interaction Properties:
 
@@ -162,8 +201,9 @@ client.SlashCommands.bulkAdd(
 | version               | String                                    | Command version.                                                           |
 | guildID               | String                                    | Command Guild ID. null if global command.                                  |
 | guild                 | Discord.Guild                             | Command Guild. null if global command.                                     |
-| createdTime           | DjsSlashCommands.Timestamp (custom class) | Interaction created time object. (Custom class)                            |
+| createdTime           | DjsSlashCommands.Timestamp                | Interaction created time object. (Custom class)                            |
 | createdTimestamp      | Date                                      | Command creation timestamp.                                                |
 | createdTimestampEpoch | Number                                    | Command creation timestamp, relative to Discord's epoch.                   |
 | defaultPermissions    | Boolean                                   | Whether the command will be added when the client is added to a new guild. |
 | type                  | Number                                    | Command type.                                                              |
+| SlashCommandHandler   | DjsSlashCommands.SlashCommandHandler      | Slash command handler that initiated this command.                         |
