@@ -175,7 +175,7 @@ module.exports = class SlashCommandInteraction {
        * @type {Date}
        */
 
-      this.createdTimestamp = this.createdTimeFull.toDate();
+      this.createdTimestamp = this.createdTime.toDate();
 
       /**
        * Interaction token.
