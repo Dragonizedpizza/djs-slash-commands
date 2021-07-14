@@ -78,8 +78,8 @@ module.exports.CommandInteractionOptions = (options, client, guild) => {
           argToSet.role = new Role(this.client, optionsRole, this.guild);
         }
       }
+      returnCollection.set(argToSet.name, argToSet);
     }
-    returnCollection.set(argToSet.name, argToSet);
   };
   return returnCollection;
 };
