@@ -15,9 +15,9 @@ module.exports = class ApplicationCommand {
    * @param {Object} options Raw Discord API command.
    * @param {Discord.Client} client Client that instantiated this command.
    * @param {SlashCommandHandler} SlashCommandHandler Slash command handler that initiated this command.
-   * 
-   * 
-   * 
+   *
+   *
+   *
    */
 
   constructor(options, client, SlashCommandHandle) {

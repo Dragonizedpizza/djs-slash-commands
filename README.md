@@ -45,7 +45,10 @@ client.on("slashCreate", async (interaction) => {
   // Deferring an interaction. Makes it say "{Name} is thinking..." and gives you 15 minutes to reply.
   if (interaction.commandName === "defer") {
     interaction.defer();
-    setTimeout(async () => await interaction.reply("I have stopped thinking."), 9000);
+    setTimeout(
+      async () => await interaction.reply("I have stopped thinking."),
+      9000
+    );
   }
 });
 ```
@@ -119,15 +122,15 @@ client.SlashCommands.bulkAdd(
   "GuildID"
 );
 ```
+
 ### Viewing/Deleting the Command:
 
 ```js
 client.on("ready", async () => {
-  
   /**
    * Viewing the command(s).
    */
-  
+
   const cmds = await client.SlashCommands.get();
   console.log(cmds); // Logs all slash commands.
 
@@ -156,7 +159,7 @@ client.on("ready", async () => {
 
   // Guild-Specific command:
   await client.SlashCommands.delete("ID", "GuildID");
-})
+});
 ```
 
 ### Interaction Properties:
@@ -190,20 +193,20 @@ client.on("ready", async () => {
 
 ### Application Command Properties
 
-| Name                  | Value                                     | Purpose                                                                    |
-| --------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
-| name                  | String                                    | Command name.                                                              |
-| id                    | String                                    | Command ID.                                                                |
-| client                | String                                    | Client that initiated the command.                                         |
-| applicationID         | String                                    | Command application ID.                                                    |
-| description           | String                                    | Command description.                                                       |
-| options               | Array                                     | Command options.                                                           |
-| version               | String                                    | Command version.                                                           |
-| guildID               | String                                    | Command Guild ID. null if global command.                                  |
-| guild                 | Discord.Guild                             | Command Guild. null if global command.                                     |
-| createdTime           | DjsSlashCommands.Timestamp                | Interaction created time object. (Custom class)                            |
-| createdTimestamp      | Date                                      | Command creation timestamp.                                                |
-| createdTimestampEpoch | Number                                    | Command creation timestamp, relative to Discord's epoch.                   |
-| defaultPermissions    | Boolean                                   | Whether the command will be added when the client is added to a new guild. |
-| type                  | Number                                    | Command type.                                                              |
-| SlashCommandHandler   | DjsSlashCommands.SlashCommandHandler      | Slash command handler that initiated this command.                         |
+| Name                  | Value                                | Purpose                                                                    |
+| --------------------- | ------------------------------------ | -------------------------------------------------------------------------- |
+| name                  | String                               | Command name.                                                              |
+| id                    | String                               | Command ID.                                                                |
+| client                | String                               | Client that initiated the command.                                         |
+| applicationID         | String                               | Command application ID.                                                    |
+| description           | String                               | Command description.                                                       |
+| options               | Array                                | Command options.                                                           |
+| version               | String                               | Command version.                                                           |
+| guildID               | String                               | Command Guild ID. null if global command.                                  |
+| guild                 | Discord.Guild                        | Command Guild. null if global command.                                     |
+| createdTime           | DjsSlashCommands.Timestamp           | Interaction created time object. (Custom class)                            |
+| createdTimestamp      | Date                                 | Command creation timestamp.                                                |
+| createdTimestampEpoch | Number                               | Command creation timestamp, relative to Discord's epoch.                   |
+| defaultPermissions    | Boolean                              | Whether the command will be added when the client is added to a new guild. |
+| type                  | Number                               | Command type.                                                              |
+| SlashCommandHandler   | DjsSlashCommands.SlashCommandHandler | Slash command handler that initiated this command.                         |
