@@ -229,7 +229,7 @@ module.exports = class SlashCommandInteraction {
       files,
     });
 
-    this.epehemeral = options["ephemeral"] ? true : false;
+    this.ephemeral = !!options?.ephemeral;
 
     this.replied = true;
   }
