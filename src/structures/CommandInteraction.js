@@ -28,7 +28,7 @@ module.exports = class SlashCommandInteraction {
        * @type {Boolean}
        */
 
-      this.isCommand = this.type === "APPLICATION_COMMAND" ? true : false;
+      this.isCommand = this.type === "APPLICATION_COMMAND";
 
       /**
        * Channel the interaction occured in.

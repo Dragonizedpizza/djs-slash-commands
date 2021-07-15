@@ -115,7 +115,7 @@ module.exports = class SlashCommandHandler {
         return {
           name: x.name.toLowerCase(),
           description: x.description,
-          options: ConvertOptions(x),
+          options: ConvertOptions(x.options),
         };
       });
 
