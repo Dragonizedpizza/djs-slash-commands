@@ -229,7 +229,7 @@ module.exports = class SlashCommandInteraction {
       files,
     });
 
-    this.ephemeral = !!options?.ephemeral;
+    this.ephemeral = options ? !!options.ephemeral : false;
 
     this.replied = true;
   }
@@ -243,7 +243,7 @@ module.exports = class SlashCommandInteraction {
     if (this.deferred || this.replied)
       throw new Error("Interaction already replied.");
 
-    this.ephemeral = ephemeral ? true : false;
+    this.ephemeral = options ? !!options.ephemeral : false;
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: 5,
