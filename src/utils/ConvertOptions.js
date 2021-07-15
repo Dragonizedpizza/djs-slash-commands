@@ -2,7 +2,14 @@ const {
     InteractionCommandOptionTypesInteger,
     InteractionCommandOptionTypesString,
   } = require("./Constants.js"),
-  { GuildMember, User, Collection, Role, Client, Guild } = require("discord.js");
+  {
+    GuildMember,
+    User,
+    Collection,
+    Role,
+    Client,
+    Guild,
+  } = require("discord.js");
 
 /**
  * Convert a user's options to API options.
@@ -48,8 +55,8 @@ module.exports.APIToUser = (options) => {
 
 /**
  * Convert CommandInteraction options to usable options.
- * @param {object} options Raw Discord API options. 
- * @param {Client} client Client that instantiated the CommandInteraction. 
+ * @param {object} options Raw Discord API options.
+ * @param {Client} client Client that instantiated the CommandInteraction.
  * @param {Guild} guild Interaction guild.
  * @returns {Collection<String, object>}
  */
@@ -80,6 +87,6 @@ module.exports.CommandInteractionOptions = (options, client, guild) => {
       }
       returnCollection.set(argToSet.name, argToSet);
     }
-  };
+  }
   return returnCollection;
 };

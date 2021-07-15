@@ -179,7 +179,7 @@ client.on("ready", async () => {
 | commandID             | String                                    | Interaction command ID.                                        |
 | author                | Discord.User                              | User who used interaction.                                     |
 | authorID              | String                                    | User who used the interaction's ID.                            |
-| args                  | Array                                     | Arguments provided for interaction.                            |
+| options               | Discord.Collection                        | Arguments provided for interaction.                            |
 | id                    | String                                    | Interaction ID.                                                |
 | createdDate           | DjsSlashCommands.Timestamp (custom class) | When the interaction was created's date.                       |
 | createdTimestampEpoch | Number                                    | When the interaction was created, relative to Discord's Epoch. |

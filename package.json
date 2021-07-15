@@ -1,6 +1,6 @@
 {
   "name": "djs-slash-commands",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "description": "A wrapper meant to incorporate discord.js slash commands into your Discord bot.",
   "main": "index.js",
   "scripts": {

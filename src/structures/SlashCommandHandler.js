@@ -8,7 +8,7 @@ const Interaction = require("./CommandInteraction.js"),
   Discord = require("discord.js"),
   resolveCommand = require("../utils/resolveCommand.js");
 /**
- *
+ * Handler for slash commands.
  * @param {Discord.Client} client
  * @param {String} ID
  * @param {String} guildId
@@ -18,7 +18,10 @@ const Interaction = require("./CommandInteraction.js"),
 module.exports = class SlashCommandHandler {
   constructor(client) {
     if (!client) throw new Error("No client provided.");
+
     this.client = client;
+
+    this.listen();
   }
 
   /**

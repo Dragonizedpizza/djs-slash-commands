@@ -1,10 +1,10 @@
 const Discord = require("discord.js"),
-{
-  InteractionTypes,
-  InteractionCommandOptionTypesInteger,
-} = require("../utils/Constants.js"),
-Timestamp = require("./Timestamp.js"),
-{ CommandInteractionOptions } = require("../utils/ConvertOptions.js");
+  {
+    InteractionTypes,
+    InteractionCommandOptionTypesInteger,
+  } = require("../utils/Constants.js"),
+  Timestamp = require("./Timestamp.js"),
+  { CommandInteractionOptions } = require("../utils/ConvertOptions.js");
 
 module.exports = class SlashCommandInteraction {
   constructor(options, client) {
@@ -112,13 +112,17 @@ module.exports = class SlashCommandInteraction {
        * @type {Discord.Collection}
        */
 
-      this.args = CommandInteractionOptions(options, this.client, this.guild);
+      this.options = CommandInteractionOptions(
+        options,
+        this.client,
+        this.guild
+      );
       /**
        * Interaction ID.
        * @type {String}
        */
 
-      this.id = options.data.id;
+      this.id = options.id;
 
       Object.defineProperty(this, "createdTime", {
         enumerable: false,
@@ -165,7 +169,11 @@ module.exports = class SlashCommandInteraction {
        * @type {Disord.WebhookClient}
        */
 
-      this.webhook = new Discord.WebhookClient(this.id, this.token);
+      this.webhook = new Discord.WebhookClient(
+        this.applicationID,
+        this.token,
+        this.client.options
+      );
 
       /**
        * Whether the interaction has been replied to.
