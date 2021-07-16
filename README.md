@@ -20,7 +20,7 @@ client.SlashCommands = new SlashCommandHandler(client);
 ```
 
 ### Receiving the interaction:
-
+**Note: You must reply in 3 seconds. To get past this limit, defer the interaction, or use followUps.**
 ```js
 client.on("slashCreate", async (interaction) => {
   if (interaction.commandName === "somecommand")
